@@ -24,7 +24,7 @@ function Login() {
 
 		try {
 
-			let response = await fetch(`${config.backendUrl}/auth/signin`, {
+			let response = await fetch(`${config.backendUrl}/api/auth/signin`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

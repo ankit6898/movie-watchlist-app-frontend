@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, ListGroup, Badge } from 'react-bootstrap';
+import config from '../../Config/config';
 
 function Home() {
   const [movies, setMovies] = useState([]);
@@ -8,35 +9,60 @@ function Home() {
   const [description, setDescription] = useState('');
   const [filter, setFilter] = useState('all');
 
-  const addMovie = (e) => {
+  const API_URL = `${config.backendUrl}/api/movies`;
+
+  const fetchMovies = async () => {
+    try {
+      const res = await fetch(`${API_URL}?filter=${filter}`);
+      const data = await res.json();
+      setMovies(data);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovies();
+  }, [filter]);
+
+  const addMovie = async (e) => {
     e.preventDefault();
     if (!title || !genre || !description) return;
-    const newMovie = {
-      id: Date.now(),
-      title,
-      genre,
-      description,
-      watched: false
-    };
-    setMovies([...movies, newMovie]);
-    setTitle('');
-    setGenre('');
-    setDescription('');
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, genre, description })
+      });
+
+      if (res.ok) {
+        setTitle('');
+        setGenre('');
+        setDescription('');
+        fetchMovies();
+      }
+    } catch (err) {
+      console.error('Error adding movie:', err);
+    }
   };
 
-  const toggleWatched = (id) => {
-    setMovies(movies.map(movie => movie.id === id ? { ...movie, watched: !movie.watched } : movie));
+  const toggleWatched = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'PATCH' });
+      if (res.ok) fetchMovies();
+    } catch (err) {
+      console.error('Error toggling watched:', err);
+    }
   };
 
-  const deleteMovie = (id) => {
-    setMovies(movies.filter(movie => movie.id !== id));
+  const deleteMovie = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (res.ok) fetchMovies();
+    } catch (err) {
+      console.error('Error deleting movie:', err);
+    }
   };
-
-  const filteredMovies = movies.filter(movie => {
-    if (filter === 'watched') return movie.watched;
-    if (filter === 'unwatched') return !movie.watched;
-    return true;
-  });
 
   return (
     <Container className="mt-4">
@@ -44,10 +70,18 @@ function Home() {
 
       <Form onSubmit={addMovie}>
         <Row className="mb-3">
-          <Col md={3}><Form.Control placeholder="Movie Title" value={title} onChange={(e) => setTitle(e.target.value)} /></Col>
-          <Col md={3}><Form.Control placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} /></Col>
-          <Col md={4}><Form.Control placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} /></Col>
-          <Col md={2}><Button type="submit" variant="primary" className="w-100">Add Movie</Button></Col>
+          <Col md={3}>
+            <Form.Control placeholder="Movie Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </Col>
+          <Col md={3}>
+            <Form.Control placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} />
+          </Col>
+          <Col md={4}>
+            <Form.Control placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+          </Col>
+          <Col md={2}>
+            <Button type="submit" variant="primary" className="w-100">Add Movie</Button>
+          </Col>
         </Row>
       </Form>
 
@@ -58,16 +92,16 @@ function Home() {
       </div>
 
       <ListGroup>
-        {filteredMovies.length === 0 && <p className="text-center">No movies found!</p>}
-        {filteredMovies.map(movie => (
-          <ListGroup.Item key={movie.id} className="d-flex justify-content-between align-items-center">
+        {movies.length === 0 && <p className="text-center">No movies found!</p>}
+        {movies.map((movie) => (
+          <ListGroup.Item key={movie._id} className="d-flex justify-content-between align-items-center">
             <div>
               <h5>{movie.title} <Badge bg="info">{movie.genre}</Badge></h5>
               <p>{movie.description}</p>
-              <Button variant={movie.watched ? 'success' : 'outline-success'} size="sm" onClick={() => toggleWatched(movie.id)}>
+              <Button variant={movie.watched ? 'success' : 'outline-success'} size="sm" onClick={() => toggleWatched(movie._id)}>
                 {movie.watched ? 'Watched' : 'Mark as Watched'}
               </Button>{' '}
-              <Button variant="danger" size="sm" onClick={() => deleteMovie(movie.id)}>Delete</Button>
+              <Button variant="danger" size="sm" onClick={() => deleteMovie(movie._id)}>Delete</Button>
             </div>
           </ListGroup.Item>
         ))}

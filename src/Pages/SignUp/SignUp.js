@@ -28,7 +28,7 @@ function SignUp() {
 		// Assuming you have an API endpoint to check if the email is already registered
 		try {
 
-			let response = await fetch(`${config.backendUrl}/auth/signup`, {
+			let response = await fetch(`${config.backendUrl}/api/auth/signup`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
