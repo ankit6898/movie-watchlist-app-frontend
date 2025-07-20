@@ -18,7 +18,7 @@ function Profile() {
 	const fetchUserProfile = async () => {
 		try {
 			let user_id = localStorage.getItem('userId');
-			let response = await fetch(`${config.backendUrl}/api/user/${user_id}`, {
+			let response = await fetch(`${config.backendUrl}/api/users/${user_id}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function Profile() {
 
 		try {
 
-			let response = await fetch(`${config.backendUrl}/user/${userId}`, {
+			let response = await fetch(`${config.backendUrl}/users/${userId}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
