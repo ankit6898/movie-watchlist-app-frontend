@@ -23,6 +23,16 @@
   font-size: calc(10px + 2vmin);
   color: rgb(249, 6, 6);
 }
+.App-footer {
+  background-color: #0252f1;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: 500px ;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
 
 .App-link {
   color: #61dafb;

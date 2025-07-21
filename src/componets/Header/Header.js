@@ -34,9 +34,9 @@ function Header() {
 
 
     return (
-        <Navbar expand={expand} className="bg-body-tertiary mb-3">
+        <Navbar expand={expand} className="bg-danger mb-3">
             <Container fluid>
-                <Navbar.Brand href="#">MOVIE WATCHLIST APP</Navbar.Brand>
+                <Navbar.Brand href="#"><b>MOVIE WATCHLIST APP</b></Navbar.Brand>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-${expand}`}
@@ -50,7 +50,7 @@ function Header() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Nav className="justify-content-end flex-grow-1 pe-3">
-                            <Nav.Link as={Link} to="/">Home</Nav.Link>
+                            <Nav.Link as={Link} to="/"><b>Home</b></Nav.Link>
                             <NavDropdown
                                 title="Profile"
                                 id={`offcanvasNavbarDropdown-expand-${expand}`}
@@ -68,7 +68,8 @@ function Header() {
                                 className="me-2"
                                 aria-label="Search"
                             />
-                            <Button variant="outline-success">Search</Button>
+                            <Button variant="outline-success" className="fw-bold"> Search</Button>
+
                         </Form>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>

@@ -58,7 +58,7 @@ function Profile() {
 
 		try {
 
-			let response = await fetch(`${config.backendUrl}/users/${userId}`, {
+			let response = await fetch(`${config.backendUrl}/api/users/${userId}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
